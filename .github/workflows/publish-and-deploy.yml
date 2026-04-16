@@ -39,8 +39,8 @@ jobs:
           file: src/GameOfLife.Api/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ OWNER_LC }}/gameoflife:latest
-            ghcr.io/${{ OWNER_LC }}/gameoflife:${{ github.sha }}
+            ghcr.io/${{ env.OWNER_LC }}/gameoflife:latest
+            ghcr.io/${{ env.OWNER_LC }}/gameoflife:${{ github.sha }}
 
   deploy_to_render:
     needs: build_and_push
