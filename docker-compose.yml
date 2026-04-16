@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - db_data:/app/data
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Data Source=/app/data/gameoflife.db
+      - GameOfLife__MaxStabilisationIterations=10000
+      - GameOfLife__CycleDetectionDepth=100
+      - GameOfLife__MaxBoardDimension=1000
+    restart: unless-stopped
+
+volumes:
+  db_data:
