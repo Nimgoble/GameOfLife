@@ -30,7 +30,8 @@ public static class InfrastructureServiceExtensions
                 // Use SQL Server provider. For Azure-managed identity scenarios include
                 // "Authentication=Active Directory Default" in the connection string; the
                 // underlying SqlClient will use the platform identity to authenticate.
-                opts.UseSqlServer(cs);
+                // Enable resilient retries for transient SQL errors. Limit retries to 3.
+                opts.UseSqlServer(cs, sqlOptions => sqlOptions.EnableRetryOnFailure(maxRetryCount: 3));
             }
             else
             {
