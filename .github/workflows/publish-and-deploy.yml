@@ -13,6 +13,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: set lower case owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -36,8 +42,8 @@ jobs:
           file: src/GameOfLife.Api/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/gameoflife:latest
-            ghcr.io/${{ github.repository_owner }}/gameoflife:${{ github.sha }}
+            ghcr.io/${{ OWNER_LC }}/gameoflife:latest
+            ghcr.io/${{ OWNER_LC }}/gameoflife:${{ github.sha }}
 
   deploy_to_render:
     needs: build_and_push
