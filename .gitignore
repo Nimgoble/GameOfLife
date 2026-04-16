@@ -36,11 +36,6 @@ ScaffoldingReadMe.txt
 # NuGet Symbol Packages
 *.snupkg
 
-# Others
-~$*
-*~
-CodeCoverage/
-
 # MSBuild Binary and Structured Log
 *.binlog
 
@@ -52,4 +47,16 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+
+# Others
+~$*
+*~
+CodeCoverage/
+
+/**/*.db*
+/**/*.db-*
 /.vs
+#/src/GameOfLife.Api/gameoflife_dev.db
+#/src/GameOfLife.Api/gameoflife_dev.db-shm
+#/src/GameOfLife.Api/gameoflife_dev.db-wal
