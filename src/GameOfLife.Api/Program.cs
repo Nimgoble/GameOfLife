@@ -64,6 +64,21 @@ builder.Services.AddSingleton<GameOfLife.Api.Services.IMetricsService, GameOfLif
 
 var app = builder.Build();
 
+// Log configured CORS origins at startup to help verify runtime configuration
+// (useful when troubleshooting CORS in production hosts like Render).
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+if (allowedOrigins.Length > 0)
+    logger.LogInformation("CORS DefaultAllowedOrigins: {Origins}", string.Join(',', allowedOrigins));
+else
+    logger.LogInformation("CORS DefaultAllowedOrigins: (none)");
+
+if (devOrigins.Length > 0)
+    logger.LogInformation("CORS DevelopmentAllowedOrigins: {Origins}", string.Join(',', devOrigins));
+else
+    logger.LogInformation("CORS DevelopmentAllowedOrigins: (none)");
+
+logger.LogInformation("CORS AllowCredentials: {AllowCredentials}", allowCredentials);
+
 // Apply EF Core schema (creates DB file / runs EnsureCreated on first run).
 app.Services.ApplyMigrations();
 
