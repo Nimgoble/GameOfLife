@@ -20,6 +20,25 @@ builder.Services.AddInfrastructure
 );
 
 builder.Services.AddHealthChecks();
+// Allow CORS for local development front-ends. Policy is registered only when
+// the host environment is Development so behavior is gated at runtime.
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("LocalDev", policy =>
+        {
+            policy.WithOrigins(
+                    "http://localhost:5173", // Vite default
+                    "http://localhost:3000", // CRA / other dev servers
+                    "http://localhost:4173"  // Vite preview
+                )
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
+    });
+}
 // In-memory metrics service (Prometheus-compatible exposition endpoint is provided below).
 builder.Services.AddSingleton<GameOfLife.Api.Services.IMetricsService, GameOfLife.Api.Services.MetricsService>();
 
@@ -41,6 +60,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerDocumentation();
 
 app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment())
+{
+    // Enable CORS policy for local development front-ends.
+    app.UseCors("LocalDev");
+}
 app.MapControllers();
 app.MapHealthChecks("/health");
 

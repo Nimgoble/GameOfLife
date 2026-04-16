@@ -17,6 +17,20 @@ public sealed class BoardsController
 ) : ControllerBase
 {
     // -----------------------------------------------------------------------
+    // GET /api/boards
+    // -----------------------------------------------------------------------
+
+    /// <summary>Returns a list of stored boards (summary information).</summary>
+    [HttpGet]
+    [ProducesResponseType(typeof(BoardSummaryResponse[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetBoards(CancellationToken ct)
+    {
+        var boards = await gameOfLifeService.ListBoardsAsync(ct);
+        var summaries = boards.Select(b => b.ToSummary()).ToArray();
+        return Ok(summaries);
+    }
+
+    // -----------------------------------------------------------------------
     // POST /api/boards
     // -----------------------------------------------------------------------
 
@@ -67,6 +81,24 @@ public sealed class BoardsController
     public async Task<IActionResult> GetNextState(Guid id, CancellationToken ct)
     {
         var board = await gameOfLifeService.GetNextStateAsync(id, ct);
+        return Ok(board.ToResponse());
+    }
+
+    // -----------------------------------------------------------------------
+    // GET /api/boards/{id}
+    // -----------------------------------------------------------------------
+
+    /// <summary>Get the initially uploaded board state.</summary>
+    /// <param name="id">The board identifier.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <response code="200">Board retrieved successfully.</response>
+    /// <response code="404">No board exists with the supplied ID.</response>
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(BoardStateResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetBoard(Guid id, CancellationToken ct)
+    {
+        var board = await gameOfLifeService.GetBoardAsync(id, ct);
         return Ok(board.ToResponse());
     }
 

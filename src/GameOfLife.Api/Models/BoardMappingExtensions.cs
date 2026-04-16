@@ -15,4 +15,12 @@ public static class BoardMappingExtensions
     };
 
     public static UploadBoardResponse ToUploadResponse(this Guid id) => new() { Id = id };
+
+    public static BoardSummaryResponse ToSummary(this Board board) => new()
+    {
+        Id = board.Id,
+        Rows = board.Rows,
+        Columns = board.Columns,
+        CreatedAt = board.CreatedAt
+    };
 }

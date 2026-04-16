@@ -15,4 +15,7 @@ public interface IBoardRepository
 
     /// <summary>Updates an existing board record.</summary>
     Task UpdateAsync(Board board, CancellationToken ct = default);
+
+    /// <summary>Returns all stored boards.</summary>
+    Task<IReadOnlyList<Board>> GetAllAsync(CancellationToken ct = default);
 }

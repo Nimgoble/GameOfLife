@@ -22,4 +22,10 @@ public interface IGameOfLifeService
     /// is not reached within the configured maximum iterations.
     /// </summary>
     Task<Board> GetFinalStateAsync(Guid id, CancellationToken ct = default);
+
+    /// <summary>Returns all stored boards (summary).</summary>
+    Task<IReadOnlyList<Board>> ListBoardsAsync(CancellationToken ct = default);
+
+    /// <summary>Returns the stored board as uploaded (initial state).</summary>
+    Task<Board> GetBoardAsync(Guid id, CancellationToken ct = default);
 }

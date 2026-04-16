@@ -88,4 +88,14 @@ public sealed class GameOfLifeService
         var board = await repository.GetByIdAsync(id, ct);
         return board ?? throw new BoardNotFoundException(id);
     }
+
+    public async Task<Board> GetBoardAsync(Guid id, CancellationToken ct = default)
+    {
+        return await RequireBoardAsync(id, ct);
+    }
+
+    public async Task<IReadOnlyList<Board>> ListBoardsAsync(CancellationToken ct = default)
+    {
+        return await repository.GetAllAsync(ct);
+    }
 }

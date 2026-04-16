@@ -37,6 +37,15 @@ public sealed class BoardRepository(GameOfLifeDbContext db) : IBoardRepository
         await db.SaveChangesAsync(ct);
     }
 
+    public async Task<IReadOnlyList<Board>> GetAllAsync(CancellationToken ct = default)
+    {
+        var records = await db.Boards
+            .AsNoTracking()
+            .ToListAsync(ct);
+
+        return records.Select(ToBoard).ToList();
+    }
+
     // -----------------------------------------------------------------------
     // Mapping helpers
     // -----------------------------------------------------------------------
