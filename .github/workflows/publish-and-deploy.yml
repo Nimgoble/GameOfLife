@@ -11,14 +11,11 @@ permissions:
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
+    env:
+      OWNER: '${{ github.repository_owner }}'
+      OWNER_LC: '${OWNER,,}'
 
     steps:
-      - name: set lower case owner name
-        run: |
-          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
-        env:
-          OWNER: '${{ github.repository_owner }}'
-
       - name: Checkout
         uses: actions/checkout@v4
 
