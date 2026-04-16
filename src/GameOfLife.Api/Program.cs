@@ -20,25 +20,41 @@ builder.Services.AddInfrastructure
 );
 
 builder.Services.AddHealthChecks();
-// Allow CORS for local development front-ends. Policy is registered only when
-// the host environment is Development so behavior is gated at runtime.
-if (builder.Environment.IsDevelopment())
+// Configure CORS policies from configuration. Use specific allowed origins
+// in production and a development policy for local front-ends. Both policies
+// are registered if corresponding configuration is present; nothing is
+// enabled by default to avoid accidental wide-open CORS in production.
+var corsSection = builder.Configuration.GetSection("Cors");
+var allowedOrigins = corsSection.GetSection("AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+var devOrigins = corsSection.GetSection("DevelopmentAllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+var allowCredentials = corsSection.GetValue<bool?>("AllowCredentials") ?? false;
+
+builder.Services.AddCors(options =>
 {
-    builder.Services.AddCors(options =>
+    if (allowedOrigins.Length > 0)
+    {
+        options.AddPolicy("DefaultCors", policy =>
+        {
+            policy.WithOrigins(allowedOrigins)
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+            if (allowCredentials)
+                policy.AllowCredentials();
+        });
+    }
+
+    if (devOrigins.Length > 0)
     {
         options.AddPolicy("LocalDev", policy =>
         {
-            policy.WithOrigins(
-                    "http://localhost:5173", // Vite default
-                    "http://localhost:3000", // CRA / other dev servers
-                    "http://localhost:4173"  // Vite preview
-                )
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
+            policy.WithOrigins(devOrigins)
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+            if (allowCredentials)
+                policy.AllowCredentials();
         });
-    });
-}
+    }
+});
 // In-memory metrics service (Prometheus-compatible exposition endpoint is provided below).
 builder.Services.AddSingleton<GameOfLife.Api.Services.IMetricsService, GameOfLife.Api.Services.MetricsService>();
 
@@ -64,6 +80,14 @@ if (app.Environment.IsDevelopment())
 {
     // Enable CORS policy for local development front-ends.
     app.UseCors("LocalDev");
+}
+else
+{
+    // In non-development environments, enable the configured default policy
+    // only if allowed origins are provided (avoid enabling a permissive policy
+    // with no configured origins).
+    if (allowedOrigins.Length > 0)
+        app.UseCors("DefaultCors");
 }
 app.MapControllers();
 app.MapHealthChecks("/health");
