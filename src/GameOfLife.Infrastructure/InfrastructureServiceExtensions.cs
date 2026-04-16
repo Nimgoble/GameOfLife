@@ -18,11 +18,25 @@ public static class InfrastructureServiceExtensions
         string connectionString = "Data Source=gameoflife.db"
     )
     {
-        services.AddDbContext<GameOfLifeDbContext>
-        (
-            opts =>
-            opts.UseSqlite(connectionString)
-        );
+        // Detect provider based on the connection string. Default is SQLite for local dev.
+        var cs = connectionString ?? "Data Source=gameoflife.db";
+        services.AddDbContext<GameOfLifeDbContext>(opts =>
+        {
+            var lower = cs.ToLowerInvariant();
+            var useSqlServer = lower.Contains("server=") || lower.Contains("data source=") && lower.Contains(".database.windows.net");
+
+            if (useSqlServer)
+            {
+                // Use SQL Server provider. For Azure-managed identity scenarios include
+                // "Authentication=Active Directory Default" in the connection string; the
+                // underlying SqlClient will use the platform identity to authenticate.
+                opts.UseSqlServer(cs);
+            }
+            else
+            {
+                opts.UseSqlite(cs);
+            }
+        });
 
         services.AddScoped<IBoardRepository, BoardRepository>();
         return services;

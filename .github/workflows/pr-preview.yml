@@ -35,9 +35,10 @@ jobs:
           context: .
           file: src/GameOfLife.Api/Dockerfile
           push: true
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/gameoflife:pr-${{ github.event.pull_request.number }}
-            ghcr.io/${{ github.repository_owner }}/gameoflife:pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+          tags:
+            - ghcr.io/${{ github.repository_owner }}/gameoflife:pr-${{ github.event.pull_request.number }}
+            - ghcr.io/${{ github.repository_owner }}/gameoflife:pr-${{ github.event.pull_request.number }}-${{ github.sha }}
 
       - name: Output preview image
-        run: echo "Preview image pushed: ghcr.io/${{ github.repository_owner }}/gameoflife:pr-${{ github.event.pull_request.number }}"
+        run: |
+          echo "Preview image pushed: ghcr.io/${{ github.repository_owner }}/gameoflife:pr-${{ github.event.pull_request.number }}"

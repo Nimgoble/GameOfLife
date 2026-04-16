@@ -54,9 +54,7 @@ nunit-*.xml
 *~
 CodeCoverage/
 
-/**/*.db*
-/**/*.db-*
+*.db
+*.db-shm
+*.db-wal
 /.vs
-#/src/GameOfLife.Api/gameoflife_dev.db
-#/src/GameOfLife.Api/gameoflife_dev.db-shm
-#/src/GameOfLife.Api/gameoflife_dev.db-wal
