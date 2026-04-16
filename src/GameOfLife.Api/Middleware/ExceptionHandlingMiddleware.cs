@@ -14,7 +14,8 @@ namespace GameOfLife.Api.Middleware;
 public sealed class ExceptionHandlingMiddleware
 (
     RequestDelegate next,
-    ILogger<ExceptionHandlingMiddleware> logger
+    ILogger<ExceptionHandlingMiddleware> logger,
+    GameOfLife.Api.Services.IMetricsService metrics
 )
 {
     public async Task InvokeAsync(HttpContext context)
@@ -27,6 +28,9 @@ public sealed class ExceptionHandlingMiddleware
         {
             logger.LogError(ex, "Unhandled exception processing {Method} {Path}",
                 context.Request.Method, context.Request.Path);
+
+            // Increment exception metric so we can monitor error rates.
+            try { metrics.IncrementException(); } catch { /* swallow to avoid masking original error */ }
 
             await WriteErrorAsync(context, ex);
         }

@@ -20,6 +20,8 @@ builder.Services.AddInfrastructure
 );
 
 builder.Services.AddHealthChecks();
+// In-memory metrics service (Prometheus-compatible exposition endpoint is provided below).
+builder.Services.AddSingleton<GameOfLife.Api.Services.IMetricsService, GameOfLife.Api.Services.MetricsService>();
 
 // -----------------------------------------------------------------------
 // Pipeline
@@ -30,6 +32,9 @@ var app = builder.Build();
 // Apply EF Core schema (creates DB file / runs EnsureCreated on first run).
 app.Services.ApplyMigrations();
 
+// Metrics middleware should run early to measure all requests.
+app.UseMiddleware<GameOfLife.Api.Middleware.MetricsMiddleware>();
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
@@ -38,6 +43,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.MapControllers();
 app.MapHealthChecks("/health");
+
+// Expose a simple Prometheus-compatible metrics endpoint.
+app.MapGet("/metrics", (GameOfLife.Api.Services.IMetricsService metrics)
+    => Results.Text(metrics.GetMetricsText(), "text/plain; version=0.0.4"));
 
 app.Run();
 

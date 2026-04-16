@@ -1,0 +1,16 @@
+bin/
+obj/
+**/bin/
+**/obj/
+.git/
+.gitignore
+*.db
+*.db-shm
+*.db-wal
+node_modules/
+.vscode/
+
+# Docker build contexts should not copy user secrets or local settings
+**/Properties/launchSettings.json
+**/appsettings.Development.json
+
