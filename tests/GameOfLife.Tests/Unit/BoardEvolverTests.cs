@@ -55,9 +55,11 @@ public sealed class BoardEvolverTests
     public void NextGeneration_Block_IsStillLife()
     {
         // 2x2 block — the canonical still life
-        var block = Grid(
+        var block = Grid
+        (
             [1, 1],
-            [1, 1]);
+            [1, 1]
+        );
 
         var result = _evolver.NextGeneration(block);
 
@@ -71,18 +73,25 @@ public sealed class BoardEvolverTests
     public void NextGeneration_Beehive_IsStillLife()
     {
         // 3x4 beehive
-        var beehive = Grid(
+        var beehive = Grid
+        (
             [0, 1, 1, 0],
             [1, 0, 0, 1],
-            [0, 1, 1, 0]);
+            [0, 1, 1, 0]
+        );
 
         var result = _evolver.NextGeneration(beehive);
 
         // The beehive must be identical to the input.
         for (int r = 0; r < beehive.Length; r++)
+        {
             for (int c = 0; c < beehive[r].Length; c++)
+            {
                 result[r][c].Should().Be(beehive[r][c],
                     $"beehive cell [{r},{c}] should be unchanged");
+            }
+        }
+            
     }
 
     // -----------------------------------------------------------------------
@@ -93,10 +102,12 @@ public sealed class BoardEvolverTests
     public void NextGeneration_Blinker_OscillatesPeriod2()
     {
         // Horizontal blinker in a 3x3 grid
-        var horizontal = Grid(
+        var horizontal = Grid
+        (
             [0, 0, 0],
             [1, 1, 1],
-            [0, 0, 0]);
+            [0, 0, 0]
+        );
 
         var vertical = _evolver.NextGeneration(horizontal);
 
@@ -120,19 +131,26 @@ public sealed class BoardEvolverTests
     public void NextGeneration_Toad_OscillatesPeriod2()
     {
         // Toad oscillator (2 generations should return to original)
-        var gen0 = Grid(
+        var gen0 = Grid
+        (
             [0, 0, 0, 0],
             [0, 1, 1, 1],
             [1, 1, 1, 0],
-            [0, 0, 0, 0]);
+            [0, 0, 0, 0]
+        );
 
         var gen1 = _evolver.NextGeneration(gen0);
         var gen2 = _evolver.NextGeneration(gen1);
 
         for (int r = 0; r < gen0.Length; r++)
+        {
             for (int c = 0; c < gen0[r].Length; c++)
+            {
                 gen2[r][c].Should().Be(gen0[r][c],
                     $"toad should be back to gen0 at [{r},{c}] after 2 generations");
+            }
+        }
+            
     }
 
     // -----------------------------------------------------------------------
@@ -143,29 +161,38 @@ public sealed class BoardEvolverTests
     public void NextGeneration_Glider_MovesCorrectly()
     {
         // Glider in a 6x6 grid (enough room for one step)
-        var gen0 = Grid(
+        var gen0 = Grid
+        (
             [0, 1, 0, 0, 0, 0],
             [0, 0, 1, 0, 0, 0],
             [1, 1, 1, 0, 0, 0],
             [0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0]);
+            [0, 0, 0, 0, 0, 0]
+        );
 
         var gen1 = _evolver.NextGeneration(gen0);
 
         // Known gen1 of glider
-        var expected = Grid(
+        var expected = Grid
+        (
             [0, 0, 0, 0, 0, 0],
             [1, 0, 1, 0, 0, 0],
             [0, 1, 1, 0, 0, 0],
             [0, 1, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0]);
+            [0, 0, 0, 0, 0, 0]
+        );
 
         for (int r = 0; r < expected.Length; r++)
+        {
             for (int c = 0; c < expected[r].Length; c++)
+            {
                 gen1[r][c].Should().Be(expected[r][c],
                     $"glider gen1 mismatch at [{r},{c}]");
+            }
+        }
+            
     }
 
     // -----------------------------------------------------------------------
@@ -257,11 +284,13 @@ public sealed class BoardEvolverTests
     {
         int placed = 0;
         for (int dr = -1; dr <= 1 && placed < count; dr++)
+        {
             for (int dc = -1; dc <= 1 && placed < count; dc++)
             {
                 if (dr == 0 && dc == 0) continue;
                 cells[r + dr][c + dc] = true;
                 placed++;
             }
+        }
     }
 }
