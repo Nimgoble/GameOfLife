@@ -23,7 +23,7 @@ The solution follows a clean, layered architecture with three projects:
 ```
 GameOfLife/
 ├── src/
-│   ├── GameOfLife.Core/            # Domain entities, interfaces, exceptions
+│   ├── GameOfLife.Core/            # Domain DTOs, interfaces, exceptions
 │   ├── GameOfLife.Infrastructure/  # EF Core (SQLite), repository implementation
 │   └── GameOfLife.Api/             # ASP.NET Core controllers, services, middleware
 └── tests/
@@ -39,7 +39,7 @@ GameOfLife/
 | `BoardEvolver` | Pure Conway rule computation; injectable + unit-testable |
 | `GameOfLifeService` | Orchestrates persistence + evolution; detects stable/cyclic states |
 | `BoardValidator` | Validates grid shape and size before any persistence |
-| `BoardRepository` | EF Core / SQLite persistence; maps between `Board` domain entity and `BoardRecord` |
+| `BoardRepository` | EF Core / SQLite persistence; maps between `BoardDto` (domain DTO) and `BoardRecord` (persistence entity) |
 | `ExceptionHandlingMiddleware` | Translates domain exceptions → RFC 7807 Problem Details responses |
 | `GameOfLifeOptions` | Strongly-typed, validated configuration (`appsettings.json`) |
 
