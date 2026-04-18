@@ -20,6 +20,14 @@ public sealed class BoardEvolverTests
     private static bool[][] Grid(params int[][] rows) =>
         rows.Select(r => r.Select(c => c == 1).ToArray()).ToArray();
 
+    [Fact]
+    public void TestPublishAndDeployUnitTestStepActuallyWorks()
+    {
+        // This test is just to verify that the unit test step in the pipeline is working.
+        // It should always fail.
+        true.Should().BeFalse();
+    }
+
     // -----------------------------------------------------------------------
     // Empty / edge cases
     // -----------------------------------------------------------------------
