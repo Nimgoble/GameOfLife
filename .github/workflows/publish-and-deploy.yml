@@ -36,6 +36,9 @@ jobs:
       - name: Run unit tests
         run: dotnet test --no-build --configuration Release --verbosity normal
 
+      - name: Clean build artifacts
+        run: dotnet clean
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
