@@ -1,4 +1,4 @@
-using GameOfLife.Core.Entities;
+using GameOfLife.Core.Dtos;
 using GameOfLife.Core.Exceptions;
 using GameOfLife.Core.Interfaces;
 using Microsoft.Extensions.Options;
@@ -19,19 +19,19 @@ public sealed class GameOfLifeService
 
     public async Task<Guid> UploadBoardAsync(bool[][] cells, CancellationToken ct = default)
     {
-        var board = new Board { Cells = cells };
+        var board = new BoardDto { Cells = cells };
         var saved = await repository.SaveAsync(board, ct);
         return saved.Id;
     }
 
-    public async Task<Board> GetNextStateAsync(Guid id, CancellationToken ct = default)
+    public async Task<BoardDto> GetNextStateAsync(Guid id, CancellationToken ct = default)
     {
         var board = await RequireBoardAsync(id, ct);
         var nextCells = evolver.NextGeneration(board.Cells);
         return board.WithCells(nextCells);
     }
 
-    public async Task<Board> GetStateAfterNGenerationsAsync(
+    public async Task<BoardDto> GetStateAfterNGenerationsAsync(
         Guid id, int generations, CancellationToken ct = default)
     {
         var board = await RequireBoardAsync(id, ct);
@@ -43,7 +43,7 @@ public sealed class GameOfLifeService
         return board.WithCells(cells);
     }
 
-    public async Task<Board> GetFinalStateAsync(Guid id, CancellationToken ct = default)
+    public async Task<BoardDto> GetFinalStateAsync(Guid id, CancellationToken ct = default)
     {
         var board = await RequireBoardAsync(id, ct);
         var cells = board.Cells;
@@ -83,18 +83,18 @@ public sealed class GameOfLifeService
     // Private helpers
     // -----------------------------------------------------------------------
 
-    private async Task<Board> RequireBoardAsync(Guid id, CancellationToken ct)
+    private async Task<BoardDto> RequireBoardAsync(Guid id, CancellationToken ct)
     {
         var board = await repository.GetByIdAsync(id, ct);
         return board ?? throw new BoardNotFoundException(id);
     }
 
-    public async Task<Board> GetBoardAsync(Guid id, CancellationToken ct = default)
+    public async Task<BoardDto> GetBoardAsync(Guid id, CancellationToken ct = default)
     {
         return await RequireBoardAsync(id, ct);
     }
 
-    public async Task<IReadOnlyList<Board>> ListBoardsAsync(CancellationToken ct = default)
+    public async Task<IReadOnlyList<BoardDto>> ListBoardsAsync(CancellationToken ct = default)
     {
         return await repository.GetAllAsync(ct);
     }

@@ -1,7 +1,8 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
-using GameOfLife.Api.Models;
+using GameOfLife.Api.Models.Requests;
+using GameOfLife.Api.Models.Responses;
 using Xunit;
 
 namespace GameOfLife.Tests.Integration;

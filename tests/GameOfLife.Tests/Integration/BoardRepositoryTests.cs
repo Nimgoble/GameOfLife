@@ -1,5 +1,5 @@
 using FluentAssertions;
-using GameOfLife.Core.Entities;
+using GameOfLife.Core.Dtos;
 using GameOfLife.Infrastructure.Persistence;
 using GameOfLife.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +33,7 @@ public sealed class BoardRepositoryTests : IDisposable
     [Fact]
     public async Task SaveAsync_PersistsBoard_AndCanBeRetrieved()
     {
-        var board = new Board { Cells = SampleCells() };
+        var board = new BoardDto { Cells = SampleCells() };
 
         await _repo.SaveAsync(board);
         var fetched = await _repo.GetByIdAsync(board.Id);
@@ -56,7 +56,7 @@ public sealed class BoardRepositoryTests : IDisposable
     [Fact]
     public async Task UpdateAsync_ModifiesCells_InDatabase()
     {
-        var board = new Board { Cells = SampleCells() };
+        var board = new BoardDto { Cells = SampleCells() };
         await _repo.SaveAsync(board);
 
         var updated = board.WithCells([[false, false], [false, false]]);
@@ -70,8 +70,8 @@ public sealed class BoardRepositoryTests : IDisposable
     [Fact]
     public async Task SaveAsync_MultipleBoardsGetUniqueIds()
     {
-        var a = new Board { Cells = SampleCells() };
-        var b = new Board { Cells = SampleCells() };
+        var a = new BoardDto { Cells = SampleCells() };
+        var b = new BoardDto { Cells = SampleCells() };
 
         await _repo.SaveAsync(a);
         await _repo.SaveAsync(b);

@@ -1,3 +1,4 @@
+using GameOfLife.Infrastructure.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameOfLife.Infrastructure.Persistence;
@@ -23,15 +24,4 @@ public sealed class GameOfLifeDbContext(DbContextOptions<GameOfLifeDbContext> op
             entity.Property(b => b.CreatedAt).IsRequired();
         });
     }
-}
-
-/// <summary>Flat persistence record for a board.</summary>
-public sealed class BoardRecord
-{
-    public Guid Id { get; set; }
-
-    /// <summary>JSON-serialised 2-D boolean array.</summary>
-    public string CellsJson { get; set; } = "[]";
-
-    public DateTimeOffset CreatedAt { get; set; }
 }

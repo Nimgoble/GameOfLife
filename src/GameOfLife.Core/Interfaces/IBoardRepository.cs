@@ -1,4 +1,4 @@
-using GameOfLife.Core.Entities;
+using GameOfLife.Core.Dtos;
 
 namespace GameOfLife.Core.Interfaces;
 
@@ -8,14 +8,14 @@ namespace GameOfLife.Core.Interfaces;
 public interface IBoardRepository
 {
     /// <summary>Persists a new board and returns it (with generated ID).</summary>
-    Task<Board> SaveAsync(Board board, CancellationToken ct = default);
+    Task<BoardDto> SaveAsync(BoardDto board, CancellationToken ct = default);
 
     /// <summary>Returns the board for the given ID, or null if not found.</summary>
-    Task<Board?> GetByIdAsync(Guid id, CancellationToken ct = default);
+    Task<BoardDto?> GetByIdAsync(Guid id, CancellationToken ct = default);
 
     /// <summary>Updates an existing board record.</summary>
-    Task UpdateAsync(Board board, CancellationToken ct = default);
+    Task UpdateAsync(BoardDto board, CancellationToken ct = default);
 
     /// <summary>Returns all stored boards.</summary>
-    Task<IReadOnlyList<Board>> GetAllAsync(CancellationToken ct = default);
+    Task<IReadOnlyList<BoardDto>> GetAllAsync(CancellationToken ct = default);
 }

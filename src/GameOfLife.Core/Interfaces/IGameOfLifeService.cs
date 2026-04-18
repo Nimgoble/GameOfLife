@@ -1,4 +1,4 @@
-using GameOfLife.Core.Entities;
+using GameOfLife.Core.Dtos;
 
 namespace GameOfLife.Core.Interfaces;
 
@@ -11,21 +11,21 @@ public interface IGameOfLifeService
     Task<Guid> UploadBoardAsync(bool[][] cells, CancellationToken ct = default);
 
     /// <summary>Returns the board state after exactly one generation.</summary>
-    Task<Board> GetNextStateAsync(Guid id, CancellationToken ct = default);
+    Task<BoardDto> GetNextStateAsync(Guid id, CancellationToken ct = default);
 
     /// <summary>Returns the board state after <paramref name="generations"/> generations.</summary>
-    Task<Board> GetStateAfterNGenerationsAsync(Guid id, int generations, CancellationToken ct = default);
+    Task<BoardDto> GetStateAfterNGenerationsAsync(Guid id, int generations, CancellationToken ct = default);
 
     /// <summary>
     /// Returns the final stable (or cycling) state of the board.
     /// Throws <see cref="Exceptions.BoardDidNotStabiliseException"/> if stability
     /// is not reached within the configured maximum iterations.
     /// </summary>
-    Task<Board> GetFinalStateAsync(Guid id, CancellationToken ct = default);
+    Task<BoardDto> GetFinalStateAsync(Guid id, CancellationToken ct = default);
 
     /// <summary>Returns all stored boards (summary).</summary>
-    Task<IReadOnlyList<Board>> ListBoardsAsync(CancellationToken ct = default);
+    Task<IReadOnlyList<BoardDto>> ListBoardsAsync(CancellationToken ct = default);
 
     /// <summary>Returns the stored board as uploaded (initial state).</summary>
-    Task<Board> GetBoardAsync(Guid id, CancellationToken ct = default);
+    Task<BoardDto> GetBoardAsync(Guid id, CancellationToken ct = default);
 }

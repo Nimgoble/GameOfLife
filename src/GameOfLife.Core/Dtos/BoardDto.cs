@@ -1,9 +1,9 @@
-namespace GameOfLife.Core.Entities;
+namespace GameOfLife.Core.Dtos;
 
 /// <summary>
 /// Represents a stored board state with metadata.
 /// </summary>
-public sealed class Board
+public sealed class BoardDto
 {
     public Guid Id { get; init; } = Guid.NewGuid();
 
@@ -18,7 +18,7 @@ public sealed class Board
     /// <summary>
     /// Returns a deep copy of this board with the supplied cell grid.
     /// </summary>
-    public Board WithCells(bool[][] cells) => new()
+    public BoardDto WithCells(bool[][] cells) => new()
     {
         Id = Id,
         Cells = cells,

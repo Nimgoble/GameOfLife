@@ -1,6 +1,6 @@
 using FluentAssertions;
 using GameOfLife.Api.Services;
-using GameOfLife.Core.Entities;
+using GameOfLife.Core.Dtos;
 using GameOfLife.Core.Exceptions;
 using GameOfLife.Core.Interfaces;
 using Microsoft.Extensions.Options;
@@ -39,7 +39,7 @@ public sealed class GameOfLifeServiceTests
     private static bool[][] SimpleCells() => [[true, false], [false, true]];
     private static bool[][] EmptyCells() => [[false, false], [false, false]];
 
-    private Board BoardWith(bool[][] cells) => new() { Cells = cells };
+    private BoardDto BoardWith(bool[][] cells) => new() { Cells = cells };
 
     // -----------------------------------------------------------------------
     // UploadBoardAsync
@@ -50,13 +50,13 @@ public sealed class GameOfLifeServiceTests
     {
         var cells = SimpleCells();
         var stored = BoardWith(cells);
-        _repository.SaveAsync(Arg.Any<Board>(), Arg.Any<CancellationToken>())
+        _repository.SaveAsync(Arg.Any<BoardDto>(), Arg.Any<CancellationToken>())
                    .Returns(stored);
 
         var id = await _service.UploadBoardAsync(cells);
 
         id.Should().Be(stored.Id);
-        await _repository.Received(1).SaveAsync(Arg.Any<Board>(), Arg.Any<CancellationToken>());
+        await _repository.Received(1).SaveAsync(Arg.Any<BoardDto>(), Arg.Any<CancellationToken>());
     }
 
     // -----------------------------------------------------------------------
@@ -83,7 +83,7 @@ public sealed class GameOfLifeServiceTests
     public async Task GetNextStateAsync_ThrowsBoardNotFoundException_WhenIdUnknown()
     {
         var id = Guid.NewGuid();
-        _repository.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns((Board?)null);
+        _repository.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns((BoardDto?)null);
 
         await _service.Invoking(s => s.GetNextStateAsync(id))
                       .Should().ThrowAsync<BoardNotFoundException>()
@@ -113,7 +113,7 @@ public sealed class GameOfLifeServiceTests
     public async Task GetStateAfterNGenerationsAsync_ThrowsBoardNotFoundException_WhenIdUnknown()
     {
         var id = Guid.NewGuid();
-        _repository.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns((Board?)null);
+        _repository.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns((BoardDto?)null);
 
         await _service.Invoking(s => s.GetStateAfterNGenerationsAsync(id, 3))
                       .Should().ThrowAsync<BoardNotFoundException>();
@@ -166,7 +166,7 @@ public sealed class GameOfLifeServiceTests
     public async Task GetFinalStateAsync_ThrowsBoardNotFoundException_WhenIdUnknown()
     {
         var id = Guid.NewGuid();
-        _repository.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns((Board?)null);
+        _repository.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns((BoardDto?)null);
 
         await _service.Invoking(s => s.GetFinalStateAsync(id))
                       .Should().ThrowAsync<BoardNotFoundException>();

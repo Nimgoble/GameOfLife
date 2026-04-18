@@ -1,4 +1,6 @@
 using GameOfLife.Api.Models;
+using GameOfLife.Api.Models.Requests;
+using GameOfLife.Api.Models.Responses;
 using GameOfLife.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

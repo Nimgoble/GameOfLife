@@ -1,7 +1,8 @@
 using System.Text.Json;
-using GameOfLife.Core.Entities;
+using GameOfLife.Core.Dtos;
 using GameOfLife.Core.Interfaces;
 using GameOfLife.Infrastructure.Persistence;
+using GameOfLife.Infrastructure.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameOfLife.Infrastructure.Repositories;
@@ -11,7 +12,7 @@ namespace GameOfLife.Infrastructure.Repositories;
 /// </summary>
 public sealed class BoardRepository(GameOfLifeDbContext db) : IBoardRepository
 {
-    public async Task<Board> SaveAsync(Board board, CancellationToken ct = default)
+    public async Task<BoardDto> SaveAsync(BoardDto board, CancellationToken ct = default)
     {
         var record = ToRecord(board);
         await db.Boards.AddAsync(record, ct);
@@ -19,7 +20,7 @@ public sealed class BoardRepository(GameOfLifeDbContext db) : IBoardRepository
         return board;
     }
 
-    public async Task<Board?> GetByIdAsync(Guid id, CancellationToken ct = default)
+    public async Task<BoardDto?> GetByIdAsync(Guid id, CancellationToken ct = default)
     {
         var record = await db.Boards
             .AsNoTracking()
@@ -28,7 +29,7 @@ public sealed class BoardRepository(GameOfLifeDbContext db) : IBoardRepository
         return record is null ? null : ToBoard(record);
     }
 
-    public async Task UpdateAsync(Board board, CancellationToken ct = default)
+    public async Task UpdateAsync(BoardDto board, CancellationToken ct = default)
     {
         var record = await db.Boards.FindAsync([board.Id], ct);
         if (record is null) return;
@@ -37,7 +38,7 @@ public sealed class BoardRepository(GameOfLifeDbContext db) : IBoardRepository
         await db.SaveChangesAsync(ct);
     }
 
-    public async Task<IReadOnlyList<Board>> GetAllAsync(CancellationToken ct = default)
+    public async Task<IReadOnlyList<BoardDto>> GetAllAsync(CancellationToken ct = default)
     {
         var records = await db.Boards
             .AsNoTracking()
@@ -50,14 +51,14 @@ public sealed class BoardRepository(GameOfLifeDbContext db) : IBoardRepository
     // Mapping helpers
     // -----------------------------------------------------------------------
 
-    private static BoardRecord ToRecord(Board board) => new()
+    private static BoardRecord ToRecord(BoardDto board) => new()
     {
         Id = board.Id,
         CellsJson = SerializeCells(board.Cells),
         CreatedAt = board.CreatedAt
     };
 
-    private static Board ToBoard(BoardRecord record) => new()
+    private static BoardDto ToBoard(BoardRecord record) => new()
     {
         Id = record.Id,
         Cells = DeserializeCells(record.CellsJson),
